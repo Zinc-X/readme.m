@@ -69,3 +69,10 @@ rclone copy ~/volc_ml_platform_demo/data/cifar-10-batches-py volces-tos:${replea
 准备镜像 #
 
 #3
+#以ubuntu为例：
+wget https://downloads.rclone.org/v1.57.0/rclone-v1.57.0-linux-amd64.deb --no-check-certificate
+dpkg -i rclone-v1.57.0-linux-amd64.deb
+#以CENTOS为例：
+wget https://downloads.rclone.org/v1.57.0/rclone-v1.57.0-linux-amd64.rpm --no-check-certificate
+rpm -ivh rclone-v1.57.0-linux-amd64.rpm 
+
