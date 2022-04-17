@@ -1,5 +1,6 @@
 hallo world
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDcOnSgUC37gGmewzccnFmakbgLLaBsfEotyq4OA/veUCjInOQl/XJsf2BE2Ta8aJg63bnWK4DHwBBveY3wE+l8/0nWQa/LHNK66T6ayf6R4k7ea5D6IRBEVd6uVZW04TzWbxHdyj8JMunwG2+gdB7q/KzHX0gyfMWNYonm2siuB7AUVLzDsjoKsyfERaqU4aJKuhUQVRZaOOXd+FNah7WhRFOlAkl5Y97V+qGZnzBVJr3ri8Y9Anj0xJumKc2+XoBDtBZ+liFEY1gknY6KuWGDnmyn954lYfrFb9FcDJV6gesHYBQlIzHfZvb+TQmxuvxrqkjzynUJOqysMyMAqbSQSduBgvJviOAdiMLb+kzBbiC1DC+G0siYBSJ7BNPdLDsjsEdSNXeLmX3O+qyP7jJFu05s4JQfxwAGl0aBu/1GF2eKjm/n6E1c68ZtP1lZZDDXkui4YDQvYXBrexfuV5yKILiQ7VxH8mlVctuRKZw4KDaaImp1+vVsqNdnmes+aNE= mdbio@iv-ybmd3jl79s2udblacmo3
+
+#1
 [tos]
 type = s3
 provider = minio
@@ -10,3 +11,61 @@ endpoint = https://tos-s3-cn-beijing.volces.com
 acl = private
 upload_cutoff = 400M
 chunk_size = 200M
+
+#2
+在本地电脑（Mac 或 Linux 操作系统）的 Terminal 中通过如下命令下载示例数据 CIFAR-10 到本地目录。
+
+mkdir -p ~/volc_ml_platform_demo/data
+
+curl "https://ml-platform-public-examples-cn-beijing.tos-cn-beijing.volces.com/datasets/cifar/cifar-10-python.tar.gz" -o ~/volc_ml_platform_demo/data/cifar-10-python.tar.gz
+
+tar zxvf ~/volc_ml_platform_demo/data/cifar-10-python.tar.gz -C ~/volc_ml_platform_demo/data/
+参考样本数据存储方案对比，选择适合自己的存储方案。也可以直接跳过该环节，先从本文中使用到的 TOS 存储方案开始了解。下文将描述使用 TOS 上传和下载数据的具体流程。
+
+阅读使用Rclone访问TOS，下文以 Rclone（Rclone 是一款功能强大的开源命令行工具，支持对接各种云存储系统，因为 TOS 兼容了标准 S3 协议，可以直接使用 Rclone 进行相关操作）的方式演示如何将本地数据上传至 TOS。
+
+上传数据需要配置子账号的密钥（AK / SK）用于身份认证，关于 AK / SK 的获取详见管理当前子账号的密钥。
+
+上传数据之前需要先创建存储桶（Bucket），Bucket 的名称需要全局唯一，且只能包含数字、横线(-)以及小写字母(a-z)，横线不能出现在开头和结尾，长度限制为 3-63。
+
+# 安装 Rclone，本文以在 MacOS 操作系统下安装 Rclone 为例 
+curl https://rclone.org/install.sh | sudo bash
+
+# 在 Rclone 工具中配置 TOS 连接
+rclone config
+
+# 依次选择如下选项或输入相关信息
+n) New remote                    //新建远程连接。
+name> volces-tos                 //输入连接名称，本文中以 volces-tos 为例。 
+4 / Amazon S3 Compliant Storage Providers including AWS, .... 
+	\ s3                           //选择兼容 S3 协议的存储类型。
+14 / Any other S3 compatible provider
+	\ Other                        //选择其他 S3 兼容的存储提供商。
+1 / Enter AWS credentials in the next step
+  \ false                        //在下一步输入密钥。
+access\_key\_id> AKLTYTBjY*******          //输入用户实际的 AK。
+secret\_access\_key> TVdaaFkyRTNNa*****    //输入用户实际的 SK。
+region> cn-beijing                         //输入 Region。
+endpoint> https://tos-s3-cn-beijing.volces.com     //输入 Endpoint。
+location\_constraint>                      //按 Enter 键置空，保持默认即可。
+acl>                                       //按 Enter 键置空，保持默认即可。
+Edit advanced config?
+n) No (default)                            //不编辑高级配置，保持默认即可。
+--------------------
+y) Yes this is OK (default)                //查看配置预览信息，然后选择y。
+--------------------
+q) Quit config                             //退出配置界面。
+
+# 配置完成后，可执行如下命令查看当前已存在的连接信息 
+rclone config show
+
+# 创建一个新的 Bucket 用于存放数据 
+rclone mkdir volces-tos:${repleace_with_your_bucket_name}
+
+# 将本地的 CIFAR-10 的数据目录上传至 TOS 的 Bucket 中 
+rclone copy ~/volc_ml_platform_demo/data/cifar-10-batches-py volces-tos:${repleace_with_your_bucket_name}/datasets/cifar/cifar-10-batches-py
+机器学习平台支持将 TOS 挂载为 POSIX 接口的文件目录，用户能够像访问本地磁盘文件一样访问 TOS Bucket 中的文件，具体的原理和使用限制请参考训练代码如何访问 TOS。
+
+准备镜像 #
+
+#3
