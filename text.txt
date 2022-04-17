@@ -1,2 +1,12 @@
 hallo world
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDcOnSgUC37gGmewzccnFmakbgLLaBsfEotyq4OA/veUCjInOQl/XJsf2BE2Ta8aJg63bnWK4DHwBBveY3wE+l8/0nWQa/LHNK66T6ayf6R4k7ea5D6IRBEVd6uVZW04TzWbxHdyj8JMunwG2+gdB7q/KzHX0gyfMWNYonm2siuB7AUVLzDsjoKsyfERaqU4aJKuhUQVRZaOOXd+FNah7WhRFOlAkl5Y97V+qGZnzBVJr3ri8Y9Anj0xJumKc2+XoBDtBZ+liFEY1gknY6KuWGDnmyn954lYfrFb9FcDJV6gesHYBQlIzHfZvb+TQmxuvxrqkjzynUJOqysMyMAqbSQSduBgvJviOAdiMLb+kzBbiC1DC+G0siYBSJ7BNPdLDsjsEdSNXeLmX3O+qyP7jJFu05s4JQfxwAGl0aBu/1GF2eKjm/n6E1c68ZtP1lZZDDXkui4YDQvYXBrexfuV5yKILiQ7VxH8mlVctuRKZw4KDaaImp1+vVsqNdnmes+aNE= mdbio@iv-ybmd3jl79s2udblacmo3
+[tos]
+type = s3
+provider = minio
+access_key_id = AKLTNDI0OTMxMmM3Mzk2NDJhM2JhOGQ5ZTIxMGFlYzM1MGE
+secret_access_key = WldNd016Y3lOamcxTlRrek5ETXlPR0l4T1RkaFpXWTRNVEV5TURKa05HVQ==
+region = cn-beijing
+endpoint = https://tos-s3-cn-beijing.volces.com
+acl = private
+upload_cutoff = 400M
+chunk_size = 200M
